@@ -10,12 +10,17 @@ export class NasaImageSearch extends LitElement {
   constructor() {
     super();
     this.returnDataOnly = false;
+    this.searchWords = 'Moon';
+    this.getData();
+    this.arrayOfData = []; // Stores image search query data
   }
 
   // properties that you wish to use as data in HTML, CSS, and the updated life-cycle
   static get properties() {
     return {
       returnDataOnly: { type: Boolean },
+      searchWords: { type: String },
+      arrayOfData: { type: Array },
     };
   }
 
@@ -27,6 +32,45 @@ export class NasaImageSearch extends LitElement {
         this.classList.add('cool');
       }
     });
+  }
+
+  getData() {
+    // defined
+    const file = new URL(
+      `https://images-api.nasa.gov/search?q=${this.searchWords}&media_type=image`
+    );
+    // go get our data from Nasa file
+    fetch(file)
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        return false;
+      })
+      .then(data => {
+        // set array to empty
+        // each element contains an image object that stores the image link, title, description, and photographer.
+        this.arrayOfData = [];
+        data.collection.items.forEach(item => {
+          let imageObj = {}; // declare object and set to empty
+          const { href } = item; // grabs link from href before heading into item child
+
+          item.data.forEach(info => {
+            // info = "0" in a Nasa API
+
+            // create an image object
+            imageObj = {
+              href: `${href}`,
+              title: `${info.title}`,
+              description: `${info.description}`,
+              photographer: `${info.photographer}`,
+            };
+          });
+          this.arrayOfData.push(imageObj); // push objects to array
+        });
+
+        console.log(this.arrayOfData);
+      });
   }
 
   // Lit life-cycle; this fires the 1st time the element is rendered on the screen
