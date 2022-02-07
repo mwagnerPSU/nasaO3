@@ -10,9 +10,10 @@ export class NasaImageSearch extends LitElement {
   constructor() {
     super();
     this.returnDataOnly = false;
-    this.searchWords = 'Moon';
     this.getData();
     this.arrayOfData = []; // Stores image search query data
+    this.searchWords = "Moon Landing";
+    this.checked = false;
   }
 
   // properties that you wish to use as data in HTML, CSS, and the updated life-cycle
@@ -20,6 +21,8 @@ export class NasaImageSearch extends LitElement {
     return {
       returnDataOnly: { type: Boolean },
       searchWords: { type: String },
+      checked: { type: Boolean, reflect: true },
+
       arrayOfData: { type: Array },
     };
   }
@@ -28,9 +31,11 @@ export class NasaImageSearch extends LitElement {
   // this allows you to react to variables changing and use javascript to perform logic
   updated(changedProperties) {
     changedProperties.forEach((oldValue, propName) => {
-      if (propName === 'name' && this[propName] === 'partner') {
-        this.classList.add('cool');
-      }
+      // if (propName === 'view') {
+      //   if (this.view === 'card') {
+      //     console.log('card!');
+      //   }
+      // }
     });
   }
 
@@ -93,6 +98,10 @@ export class NasaImageSearch extends LitElement {
     super.disconnectedCallback();
   }
 
+  __clicked() {
+    this.checked = !this.checked;
+  }
+
   // CSS - specific to Lit
   static get styles() {
     return css`
@@ -109,8 +118,14 @@ export class NasaImageSearch extends LitElement {
   // HTML - specific to Lit
   render() {
     return html`
+      <div class="searchArea">
+        <input type="text" value="${this.searchWords}">
+        <button class="searchButton">Search</button>
+        <label for="dataCheck">Return Data Only</label>
+        <input type="checkbox" id="dataCheck" .checked="${this.checked}" @click="${this.__clicked}">
+      </div>
       <div class="searchReturnArea">
-        ${this.returnDataOnly === true
+        ${this.checked
           ? html` <ul class="listArea"></ul> `
           : html`
               <accent-card
