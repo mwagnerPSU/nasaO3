@@ -19,6 +19,9 @@ export class NasaImageSearch extends LitElement {
     return {
       returnDataOnly: { type: Boolean },
       term: { type: String, reflect: true },
+      index: { type: Number, reflect: true },
+      start_year: { type: String, reflect: true },
+      end_year: { type: String, reflect: true },
       imageData: { type: Array },
     };
   }
@@ -38,7 +41,7 @@ export class NasaImageSearch extends LitElement {
   getData() {
     // defined
     const file = new URL(
-      `https://images-api.nasa.gov/search?q=${this.term}&media_type=image`
+      `https://images-api.nasa.gov/search?q=${this.term}&page=${this.index}&year_start=${this.start_year}&year_end=${this.end_year}&media_type=image`
     );
     // go get our data from Nasa file
     fetch(file)
@@ -136,9 +139,10 @@ export class NasaImageSearch extends LitElement {
                     accent-color="blue"
                     dark
                     horizontal
-                    style="width:600px;"
+                    style="max-width:1000px; margin-left:auto; margin-right:auto; font-family: 
+                  'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; border: solid white; border-radius:5px"
                   >
-                    <div slot="heading" style="flex-wrap: 'wrap'">
+                    <div style="max-width:500px;" slot="heading">
                       ${item.title}
                     </div>
                     <div slot="content">
